@@ -223,6 +223,7 @@ jobs:
         run: |
           curl -sSfLO https://raw.githubusercontent.com/Ortham/ci-scripts/2.1.2/install_boost.py
           python install_boost.py --directory ${{ github.workspace }} --boost-version 1.72.0 -a ${{ steps.boost-metadata.outputs.address-model }} locale system
+          ls ${{ steps.boost-metadata.outputs.root }}
         if: steps.boost-cache.outputs.cache-hit != 'true'
 
       - name: Run CMake
@@ -294,3 +295,9 @@ jobs:
 
           curl -sfSL -T "build/LOOT Installer.exe" -u "wrinklyninja:${{ secrets.BINTRAY_API_KEY }}" "https://bintray.com/api/v1/content/loot/snapshots/loot/${VERSION}/${FILENAME}?publish=1&override=1"
         if: github.event_name == 'push' && matrix.platform == 'Win32'
+
+      - name: Debug Boost caching
+        run: |
+          ls ${{ steps.boost-metadata.outputs.root }}
+          ls ${{ steps.boost-metadata.outputs.root }}/boost
+          ls ${{ steps.boost-metadata.outputs.root }}/stage
