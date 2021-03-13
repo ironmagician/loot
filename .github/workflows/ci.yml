@@ -190,16 +190,16 @@ jobs:
           }
 
           echo "::set-output name=address-model::$addressModel"
-          echo "::set-output name=root::${{ github.workspace }}\boost_1_72_0"
-          echo "::set-output name=librarydir::${{ github.workspace }}\boost_1_72_0\stage\$addressModel\lib"
+          echo "::set-output name=root::${{ runner.temp }}\boost_1_72_0"
+          echo "::set-output name=librarydir::${{ runner.temp }}\boost_1_72_0\stage\$addressModel\lib"
 
       - name: Boost cache
         id: boost-cache
         uses: actions/cache@v2
         with:
           path: |
-            ${{ steps.boost-metadata.outputs.root }}/boost
-            ${{ steps.boost-metadata.outputs.root }}/stage
+            ${{ steps.boost-metadata.outputs.root }}\boost
+            ${{ steps.boost-metadata.outputs.root }}\stage
           key: ${{ runner.os }}-${{ matrix.platform }}-Boost-1.72.0
 
       - name: Install JS dependencies
@@ -222,7 +222,7 @@ jobs:
       - name: Download & build Boost
         run: |
           curl -sSfLO https://raw.githubusercontent.com/Ortham/ci-scripts/2.1.2/install_boost.py
-          python install_boost.py --directory ${{ github.workspace }} --boost-version 1.72.0 -a ${{ steps.boost-metadata.outputs.address-model }} locale system
+          python install_boost.py --directory ${{ runner.temp }} --boost-version 1.72.0 -a ${{ steps.boost-metadata.outputs.address-model }} locale system
           ls ${{ steps.boost-metadata.outputs.root }}
         if: steps.boost-cache.outputs.cache-hit != 'true'
 
